@@ -30,5 +30,14 @@ return [
         'secret' => env('AWS_SECRET_ACCESS_KEY'),
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
+    
+    're-captcha-v3' => [
+        'site_key' => env ('GOOGLE_RECAPTCHA_SITE_KEY') , 
+        'secret_key' => env ('GOOGLE_RECAPTCHA_SECRET_KEY')
+    ],
 
+    're-captcha-v2' => [
+        'site_key' => env ('GOOGLE_RECAPTCHA_SITE_KEY_V2') , 
+        'secret_key' => env ('GOOGLE_RECAPTCHA_SECRET_KEY_V2')
+    ]
 ];
