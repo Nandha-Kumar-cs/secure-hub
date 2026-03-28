@@ -2,7 +2,9 @@
     <!-- re-captcha v3 -->
     <script
         src="https://www.google.com/recaptcha/api.js?render={{ config('services.re-captcha-v3.site_key') }}"></script>
-    <script src="https://www.google.com/recaptcha/api.js"></script>
+    @if ($errors->get('re-captcha-2'))
+        <script src="https://www.google.com/recaptcha/api.js"></script>
+    @endif
 
     <!-- Session Status -->
     <x-auth-session-status class="mb-4" :status="session('status')" />
@@ -14,8 +16,8 @@
         <input type="hidden" name="re-captcha-v3" id="re-captcha-v3">
 
         <!-- type of the re-captcha  -->
-        <input type="hidden" name="type" value="3">
-        
+        <input type="hidden" name="type" value="{{ $errors->get('re-captcha-2') ? 2 : 3}}">
+
         <!-- Email Address -->
         <div>
             <x-input-label for="email" :value="__('Email')" />
@@ -59,9 +61,12 @@
                 {{ __('Log in') }}
             </x-primary-button>
         </div>
+
+        <!-- re-captcha version 2 -->
+        <div class="g-recaptcha transform scale-75 align-self-center {{ $errors->get('re-captcha-2') ? 'block' : 'hidden' }} "
+            data-sitekey="{{ config('services.re-captcha-v2.site_key') }}"></div>
     </form>
-    <!-- re-captcha version 2 -->
-    <div class="g-recaptcha transform scale-75 align-self-center {{ $errors->get('re-captcha-2') ? 'block' : 'hidden' }} " data-sitekey="{{ config('services.re-captcha-v2.site_key') }}"></div>
+
 
     @push('scripts')
         <script>

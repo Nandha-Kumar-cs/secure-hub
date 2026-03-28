@@ -13,8 +13,9 @@ class Recaptcha
     {
         if ($request->input('type') == 3)
         {
-            if($request->input('re-captcha-v3') == '') {
-                return back()->withErrors(['captcha' => 'Captcha token missing']); 
+            if ($request->input('re-captcha-v3') == '')
+            {
+                return back()->withErrors(['captcha' => 'Captcha token missing']);
             }
             $response = Http::asForm()->post('https://www.google.com/recaptcha/api/siteverify', [
                 'secret' => config('services.re-captcha-v3.secret_key'),
@@ -27,13 +28,27 @@ class Recaptcha
                 return back()->withErrors(['captcha' => 'Captcha Expired !']);
             }
 
-            if($result['score'] < 0.8) {
-                return back()->withErrors(['re-captcha-2' => true]) ;
+            if ($result['score'] < 0.8)
+            {
+                return back()->withErrors(['re-captcha-2' => true]);
             }
+            return $next($request);
+        } else if ($request->input('type') == 2)
+        {
+            if(!$request->input('g-recaptcha-response')) {
+                 return back()->withErrors(['captcha' => 'Captcha token missing']);
+            }
+            $response = Http::asForm()->post('https://www.google.com/recaptcha/api/siteverify', [
+                'remoteip' => $request->ip(),
+                'secret' => config('services.re-captcha-v2.secret_key'),
+                'response' => $request->input('g-recaptcha-response')
+            ]);
 
-           return back()->withErrors(['re-captcha-2' => true]) ;
-        }else if ($request->input('type') == 2) {
-
+            $result = $response->json();
+            if(!$result['success']) {
+                return back()->withErrors(['captcha' => "Captcha verification field !"]); 
+            }
+            return $next($request) ; 
         }
     }
 }
